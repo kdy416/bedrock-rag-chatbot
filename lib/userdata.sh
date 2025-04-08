@@ -1,22 +1,23 @@
 #!/bin/bash
 
 # Update packages
-sudo apt-get update -y
+sudo dnf update -y
 
 # Install required packages
-sudo apt-get install -y ec2-instance-connect
-sudo apt-get install -y git
-sudo apt-get install -y python3-pip
-sudo apt-get install -y python3-venv
+sudo dnf install -y ec2-instance-connect
+sudo dnf install -y git
+sudo dnf install -y python3-pip
+sudo dnf install -y iptables
+# sudo dnf install -y python3
 
 # Clone repository
-cd /home/ubuntu
+cd /home/ec2-user
 sudo git clone https://github.com/kdy416/bedrock-rag-chatbot.git
 
 # Create virtual environment
-sudo python3 -m venv --copies /home/ubuntu/my_env
-sudo chown -R ubuntu:ubuntu /home/ubuntu/my_env
-source /home/ubuntu/my_env/bin/activate
+sudo python3 -m venv --copies /home/ec2-user/my_env
+sudo chown -R ec2-user:ec2-user /home/ec2-user/my_env
+source /home/ec2-user/my_env/bin/activate
 
 # Install dependencies
 cd bedrock-rag-chatbot/application
@@ -29,11 +30,11 @@ Description=Streamlit App
 After=network.target
 
 [Service]
-User=ubuntu
+User=ec2-user
 Environment='AWS_DEFAULT_REGION=ap-northeast-2'
-WorkingDirectory=/home/ubuntu/bedrock-rag-chatbot/application
+WorkingDirectory=/home/ec2-user/bedrock-rag-chatbot/application
 ExecStartPre=/bin/bash -c 'sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8501'
-ExecStart=/bin/bash -c 'source /home/ubuntu/my_env/bin/activate && streamlit run streamlit.py --server.port 8501'
+ExecStart=/bin/bash -c 'source /home/ec2-user/my_env/bin/activate && streamlit run streamlit.py --server.port 8501'
 Restart=always
 
 [Install]

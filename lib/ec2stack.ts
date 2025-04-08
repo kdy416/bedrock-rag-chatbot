@@ -70,11 +70,11 @@ export class Ec2Stack extends Stack {
       'sshIpv4',
     );
 
-    // 7) set AMI
+    // 7) set AMI: Amazon Linux 2023
     const machineImage = ec2.MachineImage.fromSsmParameter(
-      '/aws/service/canonical/ubuntu/server/focal/stable/current/amd64/hvm/ebs-gp2/ami-id'
+      '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64'
     );
-    
+        
     // 8) set User Data
     const userData = ec2.UserData.forLinux();
     const userDataScript = fs.readFileSync(path.join(__dirname, 'userdata.sh'), 'utf8');
