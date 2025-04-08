@@ -11,7 +11,7 @@ sudo apt-get install -y python3-venv
 
 # Clone repository
 cd /home/ubuntu
-sudo git clone https://github.com/ottlseo/bedrock-rag-chatbot.git
+sudo git clone https://github.com/kdy416/bedrock-rag-chatbot.git
 
 # Create virtual environment
 sudo python3 -m venv --copies /home/ubuntu/my_env
@@ -30,7 +30,7 @@ After=network.target
 
 [Service]
 User=ubuntu
-Environment='AWS_DEFAULT_REGION=us-west-2'
+Environment='AWS_DEFAULT_REGION=ap-northeast-2'
 WorkingDirectory=/home/ubuntu/bedrock-rag-chatbot/application
 ExecStartPre=/bin/bash -c 'sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8501'
 ExecStart=/bin/bash -c 'source /home/ubuntu/my_env/bin/activate && streamlit run streamlit.py --server.port 8501'
