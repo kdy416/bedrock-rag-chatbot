@@ -30,18 +30,18 @@ if btn1:
     st.session_state.messages.append({"role": "user", "content": query}) 
     st.session_state.messages.append({"role": "assistant", "content": "아키텍처 이미지를 다시 확인하려면 위 버튼을 다시 눌러주세요."})
 
-# if btn2:
-#     query = "이 애플리케이션의 UI는 어떻게 만들어졌나요?"
-#     answer = '''이 챗봇은 [Streamlit](https://docs.streamlit.io/)을 이용해 만들어졌어요.   
-#                 Streamlit은 간단한 Python 기반 코드로 대화형 웹앱을 구축 가능한 오픈소스 라이브러리입니다.    
-#                 아래 app.py 코드를 통해 Streamlit을 통해 간단히 챗봇 데모를 만드는 방법에 대해 알아보세요:
-#                 💁‍♀️ [app.py 코드 확인하기](https://github.com/ottlseo/bedrock-rag-chatbot/blob/main/application/streamlit.py)
-#             '''
-#     st.chat_message("user").write(query)
-#     st.chat_message("assistant").write(answer)
+if btn2:
+    query = "이 애플리케이션의 UI는 어떻게 만들어졌나요?"
+    answer = '''이 챗봇은 [Streamlit](https://docs.streamlit.io/)을 이용해 만들어졌어요.   
+                Streamlit은 간단한 Python 기반 코드로 대화형 웹앱을 구축 가능한 오픈소스 라이브러리입니다.    
+                아래 app.py 코드를 통해 Streamlit을 통해 간단히 챗봇 데모를 만드는 방법에 대해 알아보세요:
+                💁‍♀️ [app.py 코드 확인하기](https://github.com/ottlseo/bedrock-rag-chatbot/blob/main/application/streamlit.py)
+            '''
+    st.chat_message("user").write(query)
+    st.chat_message("assistant").write(answer)
     
-#     st.session_state.messages.append({"role": "user", "content": query}) 
-#     st.session_state.messages.append({"role": "assistant", "content": answer})
+    st.session_state.messages.append({"role": "user", "content": query}) 
+    st.session_state.messages.append({"role": "assistant", "content": answer})
 
 # 유저가 쓴 chat을 query라는 변수에 담음
 query = st.chat_input("Search documentation")
