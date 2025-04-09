@@ -7,6 +7,7 @@ sudo dnf update -y
 sudo dnf install -y ec2-instance-connect
 sudo dnf install -y git
 sudo dnf install -y python3-pip
+sudo dnf install -y python3.12
 sudo dnf install -y iptables
 # sudo dnf install -y python3
 
@@ -22,6 +23,14 @@ source /home/ec2-user/my_env/bin/activate
 # Install dependencies
 cd bedrock-rag-chatbot/application
 pip3 install -r requirements.txt
+
+sudo sh -c "cat <<EOF > /home/ec2-user/bedrock-rag-chatbot/application/variables.py
+KNOWLEDGE_BASE_ID="${KnowledgeBaseIdParam}" # Please update
+
+REGION="ap-northeast-2"
+MODEL_ARN="anthropic.claude-3-haiku-20240307-v1:0"
+EOF"
+
 
 # Create systemd service
 sudo sh -c "cat <<EOF > /etc/systemd/system/streamlit.service
