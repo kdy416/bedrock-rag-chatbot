@@ -53,16 +53,8 @@ if query:
     # 검색 → 생성 순으로 호출 (Retriever → Generator)
     citations, rag_answer = bedrock.retrieve_context_from_kb(query)
 
-    # 프롬프트 구성 후 LLM 호출
-    final_prompt = f"""
-User question:
-{query}
-
-RAG-based retrieved context summary:
-{rag_answer}
-
-Now refine the above answer with clear structure and any additional insights the foundation model can provide:
-"""
+    # 프롬프트 구성(헬퍼) 후 LLM 호출
+    final_prompt = bedrock.build_final_prompt(query, rag_answer, citations)
     final_answer = bedrock.generate_answer_with_context(final_prompt)
 
     st.chat_message("assistant").write(final_answer)

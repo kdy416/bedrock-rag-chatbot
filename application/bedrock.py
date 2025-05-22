@@ -1,5 +1,6 @@
 
 import os, sys, boto3
+import base64
 from variables import KNOWLEDGE_BASE_ID, FM_GENERATION_MODEL_ARN, MODEL_ARN, REGION
 
 bedrock_agent_runtime_client = boto3.client("bedrock-agent-runtime", region_name=REGION)
@@ -41,7 +42,16 @@ def generate_answer_with_context(prompt):
             'type': 'EXTERNAL_SOURCES',
             'externalSourcesConfiguration': {
                 'modelArn': FM_GENERATION_MODEL_ARN,  # e.g. anthropic.claude, ai21, TitanText
-                'sources': [{'sourceType': 'BYTE_CONTENT', 'byteContent': ''}]
+                'sources': [
+                    {
+                        'sourceType': 'BYTE_CONTENT',
+                        'byteContent':{
+                            'data': base64.b64encode(prompt.encode()).decode('utf-8'),
+                            'contentType': 'text/plain',
+                            'identifier': 'context-1'
+                            }
+                        }
+                    ]
             }
         },
     )
@@ -61,18 +71,32 @@ def query_rag_plus_fm(question):
     citations, rag_answer = retrieve_context_from_kb(question)
 
     final_prompt = f"""
-User question:
+<system>
+You are AWS Bedrock RAG assistant. 
+• Write in concise Korean.  
+• Never invent information that is not in the context.  
+• Cite sources like [1], [2] right after the sentence that uses them.  
+• Return **Markd
+own** with at most three H2 sections: 📝Answer / 🔗Sources / 💡Follow-up.
+</system>
+
+<user_question>
 {question}
+</user_question>
 
-# RAG-based draft answer:
-RAG-based retrieved context summary:
+<context>
 {rag_answer}
+</context>
 
-Now refine the above answer with clear structure and any additional insights the foundation model can provide:
+<task>
+Step 1 – Read <context>.  
+Step 2 – Produce the 📝Answer section (≤ 200 tokens).  
+Step 3 – List unique citations you actually used under 🔗Sources.  
+Step 4 – Suggest one related question under 💡Follow-up.
+</task>
 """
     # Step 2: FM refine
     # final_answer = query_foundation_model(final_prompt)
     
-    final_answer = generate_answer_with_context(final_prompt)
-
-    return final_answer
+    final_prompt = build_final_prompt(question, rag_answer, citations)   # helper로 분리
+    return generate_answer_with_context(final_prompt)
