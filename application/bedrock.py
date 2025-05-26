@@ -57,6 +57,7 @@ def generate_answer_with_context(prompt):
     )
     return response['output']['text']
 
+
 def query_rag_plus_fm(question):
     # """
     # Hybrid approach:
@@ -69,34 +70,24 @@ def query_rag_plus_fm(question):
     # # Compose final prompt for FM
     """Retriever + Generator 하이브리드 RAG 구조"""
     citations, rag_answer = retrieve_context_from_kb(question)
-
+    # final_prompt = build_final_prompt(question, rag_answer, citations) 
+    
     final_prompt = f"""
-<system>
-You are AWS Bedrock RAG assistant. 
-• Write in concise Korean.  
-• Never invent information that is not in the context.  
-• Cite sources like [1], [2] right after the sentence that uses them.  
-• Return **Markd
-own** with at most three H2 sections: 📝Answer / 🔗Sources / 💡Follow-up.
-</system>
-
-<user_question>
+User question:
 {question}
-</user_question>
 
-<context>
+# RAG-based draft answer:
+RAG-based retrieved context summary:
 {rag_answer}
-</context>
 
-<task>
-Step 1 – Read <context>.  
-Step 2 – Produce the 📝Answer section (≤ 200 tokens).  
-Step 3 – List unique citations you actually used under 🔗Sources.  
-Step 4 – Suggest one related question under 💡Follow-up.
-</task>
+Now refine the above answer with clear structure and any additional insights the foundation model can provide:
 """
+# ------------------------------------------------------------------
+
     # Step 2: FM refine
     # final_answer = query_foundation_model(final_prompt)
     
-    final_prompt = build_final_prompt(question, rag_answer, citations)   # helper로 분리
+    # final_answer = generate_answer_with_context(final_prompt)
+
     return generate_answer_with_context(final_prompt)
+# return final_answer

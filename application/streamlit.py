@@ -41,31 +41,30 @@ if btn1:
 # 유저가 쓴 chat을 query라는 변수에 담음
 query = st.chat_input("Search documentation")
 if query:
-    # st.chat_message("assistant").write(answer)
+    # # st.chat_message("assistant").write(answer)
     
-    st.session_state.messages.append({"role": "user", "content": query}) 
-    st.chat_message("user").write(query)
+    # st.session_state.messages.append({"role": "user", "content": query}) 
+    # st.chat_message("user").write(query)
     
-    # # rag_plus_fm 쿼리 UI 출력
-    # answer = bedrock.query_rag_plus_fm(query)
-    # st.chat_message("assistant").write(answer)
+    # # # rag_plus_fm 쿼리 UI 출력
+    # # answer = bedrock.query_rag_plus_fm(query)
+    # # st.chat_message("assistant").write(answer)
     
-    # 검색 → 생성 순으로 호출 (Retriever → Generator)
-    citations, rag_answer = bedrock.retrieve_context_from_kb(query)
+    # # 검색 → 생성 순으로 호출 (Retriever → Generator)
+    # citations, rag_answer = bedrock.retrieve_context_from_kb(query)
 
-    # 프롬프트 구성(헬퍼) 후 LLM 호출
-    final_prompt = bedrock.build_final_prompt(query, rag_answer, citations)
-    final_answer = bedrock.generate_answer_with_context(final_prompt)
-
+    # # 프롬프트 구성(헬퍼) 후 LLM 호출
+    # # final_prompt = bedrock.build_final_prompt(query, rag_answer, citations)
+    # final_answer = bedrock.generate_answer_with_context(final_prompt)
+    # ---- Hybrid RAG 호출 ----
+    final_answer = bedrock.query_rag_plus_fm(query)
     st.chat_message("assistant").write(final_answer)
     
     
     # Session 메세지 저장
-    # st.session_state.messages.append({"role": "assistant", "content": answer})
     st.session_state.messages.append({"role": "assistant", "content": final_answer})
 
     # # Session에 메세지 저장
-    # st.session_state.messages.append({"role": "user", "content": query})
-    
+
     # # UI에 출력
     # st.chat_message("user").write(query)        
